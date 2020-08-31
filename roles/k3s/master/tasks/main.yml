@@ -13,22 +13,21 @@
   systemd:
     name: k3s
     daemon_reload: yes
-    state: restarted
     enabled: yes
 
 - name: Wait for node-token
   wait_for:
     path: /var/lib/rancher/k3s/server/node-token
 
-- name: Register node-token file access mode
-  stat:
-    path: /var/lib/rancher/k3s/server
-  register: p
+#- name: Register node-token file access mode
+#  stat:
+#    path: /var/lib/rancher/k3s/server
+#  register: p
 
-- name: Change file access node-token
-  file:
-    path: /var/lib/rancher/k3s/server
-    mode: "g+rx,o+rx"
+#- name: Change file access node-token
+#  file:
+#    path: /var/lib/rancher/k3s/server
+#    mode: "g+rx,o+rx"
 
 - name: Read node-token from master
   slurp:
@@ -39,10 +38,10 @@
   set_fact:
     token: "{{ node_token.content | b64decode | regex_replace('\n', '') }}"
 
-- name: Restore node-token file access
-  file:
-    path: /var/lib/rancher/k3s/server
-    mode: "{{ p.stat.mode }}"
+#- name: Restore node-token file access
+#  file:
+#    path: /var/lib/rancher/k3s/server
+#    mode: "{{ p.stat.mode }}"
 
 - name: Create directory .kube
   file:
